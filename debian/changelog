@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer-log-server (1.0.1) unstable; urgency=low
+
+  - Initial fixes
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Tue, 28 Jan 2025 21:29:00 +0100
+
 python3-cyberfusion-rabbitmq-consumer-log-server (1.0) unstable; urgency=low
 
   - Initial release
