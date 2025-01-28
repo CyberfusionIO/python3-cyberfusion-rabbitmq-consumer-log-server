@@ -1,6 +1,6 @@
 from datetime import datetime
 
-
+from sqlalchemy import ForeignKey
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 from sqlalchemy import create_engine, Column, DateTime, Integer, JSON, String
 from sqlalchemy.orm import Session, sessionmaker
@@ -24,7 +24,6 @@ class BaseModel(Base):  # type: ignore[misc, valid-type]
     __abstract__ = True
 
     id = Column(Integer, primary_key=True)
-    correlation_id = Column(String(length=36), unique=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 
@@ -33,6 +32,7 @@ class RPCRequestLog(BaseModel):
 
     __tablename__ = "rpc_requests_logs"
 
+    correlation_id = Column(String(length=36), unique=True, nullable=False)
     request_payload = Column(JSON, nullable=False)
     virtual_host_name = Column(String(length=255), nullable=False)
     exchange_name = Column(String(length=255), nullable=False)
@@ -46,5 +46,11 @@ class RPCResponseLog(BaseModel):
 
     __tablename__ = "rpc_responses_logs"
 
+    correlation_id = Column(
+        String(length=36),
+        ForeignKey("rpc_requests_logs.correlation_id"),
+        unique=True,
+        nullable=False,
+    )
     response_payload = Column(JSON, nullable=False)
     traceback = Column(JSON, nullable=True)
