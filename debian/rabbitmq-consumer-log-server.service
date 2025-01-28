@@ -1,0 +1,17 @@
+[Unit]
+Description=RabbitMQ Consumer Log Server
+After=network.target
+
+[Service]
+User=rabbitmq-consumer-log-server
+Group=rabbitmq-consumer-log-server
+Environment=PORT=4194
+Environment=HOST=::
+Environment=DATABASE_PATH=/var/lib/rabbitmq-consumer-log-server.db
+Environment=TEMPLATES_DIRECTORY=/usr/share/rabbitmq-consumer-log-server/templates/
+Environment=STATIC_FILES_DIRECTORY=/usr/share/rabbitmq-consumer-log-server/static/
+ExecStart=/usr/bin/uvicorn --host $HOST --port $PORT cyberfusion.RabbitMQConsumerLogServer.api:app
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
