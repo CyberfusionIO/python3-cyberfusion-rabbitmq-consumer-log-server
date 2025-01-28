@@ -74,3 +74,11 @@ Use a proxy that terminates SSL. E.g. [HAProxy](http://www.haproxy.org/).
 ## ⚠️ Development
 
 Developing the RabbitMQ consumer? Access the API documentation on `/redoc` (Redoc) and `/docs` (Swagger).
+
+Developing the log server? After installing it, and running migrations, seed your database with example data:
+
+```bash
+python3 seed_example_data.py
+````
+
+You can run the seeder multiple times to fill up your database with more data.
