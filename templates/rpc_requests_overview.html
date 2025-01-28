@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPC Requests Overview</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>RabbitMQ Consumer Log Server</h1>
+        <nav>
+            <a href="{{ url_for('rpc_requests_overview') }}">Overview</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>RPC Requests Overview</h1>
+        <p>Sorted by request time (newest first).</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Request</th>
+                    <th>Status</th>
+                    <th>Source</th>
+                    <th></th>
+                    <th>Request time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rpc_request in rpc_requests %}
+                    <tr>
+                        <!-- Correlation ID with truncation and expand on click -->
+                        <td>
+                            <span class="truncated-correlation-id" onclick="toggleFullId(this)">
+                                {{ rpc_request.correlation_id }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="collapsible">Show/Hide Payload</button>
+                            <div class="content">
+                                <pre>{{ rpc_request.request_payload | tojson(indent=2) }}</pre>
+                            </div>
+                        </td>
+                        <td>
+                            {% if rpc_request.correlation_id not in rpc_responses %}
+                                &#9203; Awaiting RPC response
+                            {% elif rpc_responses[rpc_request.correlation_id].traceback %}
+                                &#10060; Error
+                            {% else %}
+                                &#9989; Success
+                            {% endif %}
+                        </td>
+                        <td>
+                            <pre>{{ rpc_request.queue_name }} / {{ rpc_request.virtual_host_name }} / {{ rpc_request.exchange_name }}</pre>
+                        </td>
+                        <td>
+                            <a class="details-link" href="{{ url_for('rpc_request_detail', correlation_id=rpc_request.correlation_id) }}">View Details</a>
+                        </td>
+                        <td>
+                            {{ rpc_request.created_at }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // Toggle full correlation ID visibility
+        function toggleFullId(element) {
+            element.classList.toggle('expanded');
+        }
+
+        // Ensure collapsible buttons work
+        document.querySelectorAll('.collapsible').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                if (content.style.display === 'block') {
+                    content.style.display = 'none';
+                } else {
+                    content.style.display = 'block';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

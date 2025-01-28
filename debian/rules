@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE=1
+export PYBUILD_NAME=python3-cyberfusion-rabbitmq-consumer-log-server
+export PYBUILD_DISABLE=test
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_installsystemd:
+	dh_installsystemd --name=rabbitmq-consumer-log-server
+
+execute_after_dh_installsystemd:
+	dh_installsysusers
+
+# Run make manually; no native way to let dh_install use multiple build systems
+execute_after_dh_install:
+	make install

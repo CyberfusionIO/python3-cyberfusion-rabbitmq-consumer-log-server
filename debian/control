@@ -1,0 +1,12 @@
+Source: python3-cyberfusion-rabbitmq-consumer-log-server
+Section: misc
+Priority: optional
+Maintainer: William Edwards <wedwards@cyberfusion.nl>
+Build-Depends: python3-all, dh-python, debhelper (>= 10), python3-setuptools, pybuild-plugin-pyproject, rsync
+Standards-Version: 4.3.0
+
+Package: python3-cyberfusion-rabbitmq-consumer-log-server
+Architecture: all
+Depends: python3, alembic, uvicorn, ${python3:Depends}, ${misc:Depends}
+Description: Log server for RabbitMQ consumer.
+ Log server for RabbitMQ consumer.

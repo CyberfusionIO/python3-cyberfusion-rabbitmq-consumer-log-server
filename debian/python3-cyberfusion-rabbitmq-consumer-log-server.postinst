@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+#DEBHELPER#
+
+if [ "$1" = "configure" ]; then
+    DATABASE_PATH=/var/lib/rabbitmq-consumer-log-server.db
+
+    if [ ! -f $DATABASE_PATH ]; then
+	    echo "Database does not exist, creating..."
+
+        sqlite3 $DATABASE_PATH "VACUUM;"
+    else
+        echo "Database already exists, not creating"
+    fi
+
+    /usr/bin/alembic --config /usr/share/rabbitmq-consumer-log-server/alembic.ini upgrade head
+fi
+
+exit 0
