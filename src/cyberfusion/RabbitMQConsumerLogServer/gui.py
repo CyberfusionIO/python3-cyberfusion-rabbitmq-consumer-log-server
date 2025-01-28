@@ -1,4 +1,3 @@
-import json
 from fastapi import Query
 from typing import Any
 from fastapi import Depends, HTTPException
@@ -62,9 +61,6 @@ def rpc_requests_overview(
         .all()
     )
 
-    for rpc_request in rpc_requests:
-        rpc_request.request_payload = json.loads(rpc_request.request_payload)
-
     # Get template
 
     return templates.TemplateResponse(
@@ -116,11 +112,6 @@ def rpc_request_detail(
         .filter(database.RPCResponseLog.correlation_id == str(correlation_id))
         .first()
     )
-
-    rpc_request.request_payload = json.loads(rpc_request.request_payload)
-
-    if rpc_response:
-        rpc_response.response_payload = json.loads(rpc_response.response_payload)
 
     return templates.TemplateResponse(
         name="rpc_request_detail.html",

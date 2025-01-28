@@ -1,6 +1,5 @@
-from typing import Any, Optional
+from typing import Optional
 from pydantic import BaseModel, UUID4
-from pydantic import Json
 
 
 class APIDetailMessage(BaseModel):
@@ -9,7 +8,7 @@ class APIDetailMessage(BaseModel):
 
 class RPCRequestLog(BaseModel):
     correlation_id: UUID4
-    request_payload: Json[Any]
+    request_payload: dict | list
     virtual_host_name: str
     queue_name: str
     exchange_name: str
@@ -19,5 +18,5 @@ class RPCRequestLog(BaseModel):
 
 class RPCResponseLog(BaseModel):
     correlation_id: UUID4
-    response_payload: Json[Any]
+    response_payload: dict
     traceback: Optional[str]
