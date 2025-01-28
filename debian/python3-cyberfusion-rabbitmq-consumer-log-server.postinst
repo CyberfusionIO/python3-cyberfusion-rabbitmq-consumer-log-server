@@ -5,7 +5,12 @@ set -e
 #DEBHELPER#
 
 if [ "$1" = "configure" ]; then
+    DATABASE_DIR=/var/lib/rabbitmq-consumer-log-server
     DATABASE_PATH=/var/lib/rabbitmq-consumer-log-server.db
+
+    mkdir -p $DATABASE_DIR
+    chown rabbitmq-consumer-log-server: $DATABASE_DIR
+    chmod 0700 $DATABASE_DIR
 
     if [ ! -f $DATABASE_PATH ]; then
 	    echo "Database does not exist, creating..."
@@ -15,7 +20,10 @@ if [ "$1" = "configure" ]; then
         echo "Database already exists, not creating"
     fi
 
-    /usr/bin/alembic --config /usr/share/rabbitmq-consumer-log-server/alembic.ini upgrade head
+    chown rabbitmq-consumer-log-server: $DATABASE_PATH
+    chmod 0600 $DATABASE_PATH
+
+    sudo -u rabbitmq-consumer-log-server /usr/bin/alembic --config /usr/share/rabbitmq-consumer-log-server/alembic.ini upgrade head
 fi
 
 exit 0
