@@ -66,12 +66,10 @@
         </table>
     </div>
     <script>
-        // Toggle full correlation ID visibility
         function toggleFullId(element) {
             element.classList.toggle('expanded');
         }
 
-        // Ensure collapsible buttons work
         document.querySelectorAll('.collapsible').forEach(btn => {
             btn.addEventListener('click', function() {
                 const content = this.nextElementSibling;
@@ -83,6 +81,5 @@
             });
         });
     </script>
-
 </body>
 </html>

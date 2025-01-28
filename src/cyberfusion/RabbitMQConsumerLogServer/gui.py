@@ -18,6 +18,8 @@ from fastapi import APIRouter
 
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 
+DEFAULT_LIMIT = 20
+
 router = APIRouter(dependencies=[Depends(validate_credentials)])
 
 templates = Jinja2Templates(directory=settings.templates_directory)
@@ -37,7 +39,7 @@ templates = Jinja2Templates(directory=settings.templates_directory)
 def rpc_requests_overview(
     request: Request,
     database_session: Session = Depends(get_database_session),
-    limit: int = Query(default=20, ge=1, le=20),
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=20),
     offset: int = Query(
         default=0,
     ),

@@ -33,7 +33,7 @@ class RPCRequestLog(BaseModel):
 
     __tablename__ = "rpc_requests_logs"
 
-    request_payload = Column(JSON, nullable=True)
+    request_payload = Column(JSON, nullable=False)
     virtual_host_name = Column(String(length=255), nullable=False)
     exchange_name = Column(String(length=255), nullable=False)
     queue_name = Column(String(length=255), nullable=False)
@@ -46,5 +46,5 @@ class RPCResponseLog(BaseModel):
 
     __tablename__ = "rpc_responses_logs"
 
-    response_payload = Column(JSON, nullable=True)
-    traceback = Column(JSON, nullable=False)
+    response_payload = Column(JSON, nullable=False)
+    traceback = Column(JSON, nullable=True)

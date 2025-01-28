@@ -1,7 +1,7 @@
 from faker import Faker
 import os
 import random
-from typing import List
+from typing import List, Generator
 import uuid
 from alembic import command
 from alembic.config import Config
@@ -72,7 +72,7 @@ def test_client() -> TestClient:
 
 
 @pytest.fixture(autouse=True)
-def sqlite_database() -> None:
+def sqlite_database() -> Generator[None, None, None]:
     database_path = os.path.join(os.path.sep, "tmp", str(os.getpid()))
 
     settings.database_path = database_path

@@ -32,29 +32,25 @@ The log server consists of two parts: a web-based GUI, and an API.
 
 The RabbitMQ consumer writes RPC requests/responses to the API. To let the consumer ship logs to the log server, see the consumer's [README](https://github.com/CyberfusionIO/python3-cyberfusion-rabbitmq-consumer/blob/master/README.md#central-logging).
 
-The API requires an API token, which is configured in `/etc/rabbitmq-consumer-log-server/api_token` (regular text file).
+In the consumer, an API token must be set. Set it in `/etc/rabbitmq-consumer-log-server/api_token` (regular text file).
 
-For example, you can generate a random secret using `openssl`: `openssl rand -hex 32`
+You can generate a random API token using `openssl`: `openssl rand -hex 32`
 
-You do not need to keep the API token confidential. It can be used for writing only. Therefore, abuse would be a nuisance at the worst.
+You don't need to keep the API token confidential: it's only used by the RabbitMQ consumer to **write** logs. Therefore, abuse would be a nuisance at the worst, not a data breach.
 
 ## GUI
 
-Human users use the web-based GUI to view RPC requests/responses.
+Use the web-based GUI to view RPC requests/responses.
 
-The web GUI uses basic authentication. The password is configured in `/etc/rabbitmq-consumer-log-server/gui_password` (regular text file).
+The web GUI uses basic authentication. Set a password in `/etc/rabbitmq-consumer-log-server/gui_password` (regular text file).
 
-For example, you can generate a random secret using `openssl`: `openssl rand -hex 32`
+You can generate a random password using `openssl`: `openssl rand -hex 32`
 
 You can use any basic authentication username - it's ignored.
 
 # Usage
 
 ## Run
-
-The server runs on `:::4194`.
-
-Access the web GUI on `/rpc-requests`.
 
 ### Manually
 
@@ -63,12 +59,18 @@ Access the web GUI on `/rpc-requests`.
 
 ### systemd
 
+The server runs on `:::4194`.
+
     systemctl start rabbitmq-consumer-log-server.service
+
+### Web GUI
+
+Once the server is started, access the web GUI on `/rpc-requests`.
 
 ## SSL
 
 Use a proxy that terminates SSL. E.g. [HAProxy](http://www.haproxy.org/).
 
-## Development
+## ⚠️ Development
 
 Developing the RabbitMQ consumer? Access the API documentation on `/redoc` (Redoc) and `/docs` (Swagger).
