@@ -15,6 +15,14 @@
     </header>
     <div class="container">
         <h1>RPC Requests Overview</h1>
+
+        <!-- Pagination Information -->
+        <div class="pagination-info">
+            <p>
+                Showing requests {{ offset + 1 }} to {{ offset + rpc_requests | length }} ({{ total_rpc_requests }} total)
+            </p>
+        </div>
+
         <p>Sorted by request time (newest first).</p>
         <table>
             <thead>
@@ -64,6 +72,17 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-controls">
+            {% if offset > 0 %}
+                <a href="{{ url_for('rpc_requests_overview') }}?offset={{ offset - limit }}&limit={{ limit }}" class="pagination-link">Previous</a>
+            {% endif %}
+            {% if offset + limit < total_rpc_requests %}
+                <a href="{{ url_for('rpc_requests_overview') }}?offset={{ offset + limit }}&limit={{ limit }}" class="pagination-link">Next</a>
+            {% endif %}
+        </div>
+
     </div>
     <script>
         function toggleFullId(element) {
