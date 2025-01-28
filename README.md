@@ -71,6 +71,9 @@ Once the server is started, access the web GUI on `/rpc-requests`.
 
 Use a proxy that terminates SSL. E.g. [HAProxy](http://www.haproxy.org/).
 
+When using a reverse proxy, `127.0.0.1` is *trusted* by default. To override this, set the `FORWARDED_ALLOW_IPS` environment variable.
+For more information, see the [Uvicorn documentation](https://www.uvicorn.org/deployment/#running-from-the-command-line) (look for `--proxy-headers` and `--forwarded-allow-ips`).
+
 ## ⚠️ Development
 
 Developing the RabbitMQ consumer? Access the API documentation on `/redoc` (Redoc) and `/docs` (Swagger).
