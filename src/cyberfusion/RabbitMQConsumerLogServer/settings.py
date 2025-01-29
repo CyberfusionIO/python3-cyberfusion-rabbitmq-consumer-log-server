@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     database_path: str = "./rabbitmq-consumer-log-server.db"
     templates_directory: str = "templates"
     static_files_directory: str = "static"
+    keep_days: int = 45
 
     class Config:
         """Config."""
