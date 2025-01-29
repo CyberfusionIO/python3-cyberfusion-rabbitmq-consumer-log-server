@@ -60,7 +60,9 @@
                             {% endif %}
                         </td>
                         <td>
-                            <pre>{{ rpc_request.queue_name }} / {{ rpc_request.virtual_host_name }} / {{ rpc_request.exchange_name }}</pre>
+                            <pre>{{ rpc_request.queue_name }}</pre>
+                            <pre>{{ rpc_request.virtual_host_name }}</pre>
+                            <pre>{{ rpc_request.exchange_name }}</pre>
                         </td>
                         <td>
                             <a class="details-link" href="{{ url_for('rpc_request_detail', correlation_id=rpc_request.correlation_id) }}">View Details</a>
