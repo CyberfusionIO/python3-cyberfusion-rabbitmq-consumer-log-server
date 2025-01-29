@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: e7baf5d5b97e
+Revision ID: 135a47ab3f0b
 Revises:
-Create Date: 2025-01-28 20:06:26.237255
+Create Date: 2025-01-29 14:20:25.549463
 
 """
 
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "e7baf5d5b97e"
+revision = "135a47ab3f0b"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,8 +29,10 @@ def upgrade() -> None:
         sa.Column("queue_name", sa.String(length=255), nullable=False),
         sa.Column("hostname", sa.String(length=255), nullable=False),
         sa.Column("rabbitmq_username", sa.String(length=255), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("correlation_id"),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_rpc_requests_logs")),
+        sa.UniqueConstraint(
+            "correlation_id", name=op.f("uq_rpc_requests_logs_correlation_id")
+        ),
     )
     op.create_table(
         "rpc_responses_logs",
@@ -42,9 +44,12 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["correlation_id"],
             ["rpc_requests_logs.correlation_id"],
+            name=op.f("fk_rpc_responses_logs_correlation_id_rpc_requests_logs"),
         ),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("correlation_id"),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_rpc_responses_logs")),
+        sa.UniqueConstraint(
+            "correlation_id", name=op.f("uq_rpc_responses_logs_correlation_id")
+        ),
     )
 
 

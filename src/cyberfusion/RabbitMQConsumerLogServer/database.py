@@ -1,10 +1,30 @@
+import sqlite3
 from datetime import datetime
-
-from sqlalchemy import ForeignKey
+from sqlalchemy.pool.base import _ConnectionRecord
+from sqlalchemy import ForeignKey, MetaData
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 from sqlalchemy import create_engine, Column, DateTime, Integer, String
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.engine import Engine
+from sqlalchemy import event
+
+
+@event.listens_for(Engine, "connect")  # type: ignore[misc]
+def set_sqlite_pragma(
+    dbapi_connection: sqlite3.Connection, connection_record: _ConnectionRecord
+) -> None:
+    """Enable foreign key support.
+
+    This is needed for cascade deletes to work.
+
+    See https://docs.sqlalchemy.org/en/13/dialects/sqlite.html#sqlite-foreign-keys
+    """
+    cursor = dbapi_connection.cursor()
+
+    cursor.execute("PRAGMA foreign_keys=ON")
+
+    cursor.close()
 
 
 def make_database_session() -> Session:
@@ -15,7 +35,17 @@ def make_database_session() -> Session:
     return sessionmaker(bind=engine)()
 
 
-Base = declarative_base()
+naming_convention = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}
+
+metadata = MetaData(naming_convention=naming_convention)
+
+Base = declarative_base(metadata=metadata)
 
 
 class BaseModel(Base):  # type: ignore[misc, valid-type]
@@ -48,7 +78,7 @@ class RPCResponseLog(BaseModel):
 
     correlation_id = Column(
         String(length=36),
-        ForeignKey("rpc_requests_logs.correlation_id"),
+        ForeignKey("rpc_requests_logs.correlation_id", ondelete="CASCADE"),
         unique=True,
         nullable=False,
     )

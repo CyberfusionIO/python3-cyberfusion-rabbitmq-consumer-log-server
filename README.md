@@ -48,6 +48,18 @@ You can generate a random password using `openssl`: `openssl rand -hex 32`
 
 You can use any basic authentication username - it's ignored.
 
+## Retention
+
+By default, logs are kept for 45 days. To override this, set the environment variable `KEEP_DAYS` to the number of days.
+
+## Periodic tasks
+
+Using the Debian package? You don't have to do anything - periodic tasks are automatically executed using cron.
+
+Otherwise, run the following commands periodically:
+
+* `rabbitmq-consumer-log-server-purge-logs` (every 24 hours)
+
 # Usage
 
 ## Run

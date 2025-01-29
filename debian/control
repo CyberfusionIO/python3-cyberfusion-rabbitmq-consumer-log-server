@@ -7,6 +7,6 @@ Standards-Version: 4.3.0
 
 Package: python3-cyberfusion-rabbitmq-consumer-log-server
 Architecture: all
-Depends: python3, alembic, uvicorn, sudo, ${python3:Depends}, ${misc:Depends}
+Depends: python3, alembic, uvicorn, sudo, tuxis-cron, ${python3:Depends}, ${misc:Depends}
 Description: Log server for RabbitMQ consumer.
  Log server for RabbitMQ consumer.
