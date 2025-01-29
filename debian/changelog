@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer-log-server (1.1.2) unstable; urgency=low
+
+  - Fix double JSON cast
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 29 Jan 2025 20:00:00 +0100
+
 python3-cyberfusion-rabbitmq-consumer-log-server (1.1.1) unstable; urgency=low
 
   - Fix prune cron
