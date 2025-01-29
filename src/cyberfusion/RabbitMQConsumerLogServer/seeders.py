@@ -7,6 +7,7 @@ import random
 from sqlalchemy.orm import Session
 
 from cyberfusion.RabbitMQConsumerLogServer import database
+import json
 
 faker = Faker()
 
@@ -64,7 +65,7 @@ def seed_rpc_request_logs(database_session: Session) -> List[database.RPCRequest
     for _ in range(1, 50):
         rpc_request_log = database.RPCRequestLog(
             correlation_id=str(uuid.uuid4()),
-            request_payload=faker.json(),
+            request_payload=json.dumps(generate_fake_rpc_request()),
             virtual_host_name=faker.word(),
             hostname=faker.hostname(),
             rabbitmq_username=faker.user_name(),
@@ -91,7 +92,7 @@ def seed_rpc_response_logs(
     for rpc_request_log in rpc_request_logs:
         rpc_response_log = database.RPCResponseLog(
             correlation_id=rpc_request_log.correlation_id,
-            response_payload=faker.json(),
+            response_payload=json.dumps(generate_fake_rpc_response()),
             traceback=random.choice(tracebacks + [None]),
         )
 
@@ -104,3 +105,20 @@ def seed_rpc_response_logs(
     result.reverse()  # Newest first
 
     return result
+
+
+def generate_fake_rpc_response() -> dict:
+    return json.loads(
+        faker.json(
+            data_columns={  # type: ignore[arg-type, unused-ignore]
+                "success": "boolean",
+                "data": {"key": "word"},
+                "message": "sentence",
+            },
+            num_rows=1,
+        )
+    )
+
+
+def generate_fake_rpc_request() -> dict:
+    return json.loads(faker.json(num_rows=1))

@@ -1,5 +1,6 @@
 """App."""
 
+import json
 from typing import Any
 from fastapi import Body
 from fastapi import Depends, HTTPException, status
@@ -38,7 +39,7 @@ def log_rpc_request(
 ) -> Any:
     object_ = database.RPCRequestLog(
         correlation_id=str(body.correlation_id),
-        request_payload=body.request_payload,
+        request_payload=json.dumps(body.request_payload),
         virtual_host_name=body.virtual_host_name,
         hostname=body.hostname,
         rabbitmq_username=body.rabbitmq_username,
@@ -90,7 +91,7 @@ def log_rpc_response(
 
     object_ = database.RPCResponseLog(
         correlation_id=str(body.correlation_id),
-        response_payload=body.response_payload,
+        response_payload=json.dumps(body.response_payload),
         traceback=body.traceback,
     )
 

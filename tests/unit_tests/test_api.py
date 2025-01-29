@@ -1,5 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlalchemy.orm.session import Session
+
+from cyberfusion.RabbitMQConsumerLogServer.seeders import generate_fake_rpc_response
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 import uuid
 
@@ -38,7 +40,7 @@ def test_create_rpc_response_missing_rpc_request(
         headers={"X-API-Token": settings.api_token},
         json={
             "correlation_id": correlation_id,
-            "response_payload": None,
+            "response_payload": generate_fake_rpc_response(),
             "traceback": None,
         },
     )

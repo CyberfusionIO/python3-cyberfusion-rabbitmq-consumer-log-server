@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import ForeignKey
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
-from sqlalchemy import create_engine, Column, DateTime, Integer, JSON, String
+from sqlalchemy import create_engine, Column, DateTime, Integer, String
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -33,7 +33,7 @@ class RPCRequestLog(BaseModel):
     __tablename__ = "rpc_requests_logs"
 
     correlation_id = Column(String(length=36), unique=True, nullable=False)
-    request_payload = Column(JSON, nullable=False)
+    request_payload = Column(String(), nullable=False)
     virtual_host_name = Column(String(length=255), nullable=False)
     exchange_name = Column(String(length=255), nullable=False)
     queue_name = Column(String(length=255), nullable=False)
@@ -52,5 +52,5 @@ class RPCResponseLog(BaseModel):
         unique=True,
         nullable=False,
     )
-    response_payload = Column(JSON, nullable=False)
-    traceback = Column(JSON, nullable=True)
+    response_payload = Column(String(), nullable=False)
+    traceback = Column(String(), nullable=True)

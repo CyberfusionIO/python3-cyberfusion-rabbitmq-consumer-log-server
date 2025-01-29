@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer-log-server (1.0.2) unstable; urgency=low
+
+  - Fix JSON casting
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 29 Jan 2025 02:32:00 +0100
+
 python3-cyberfusion-rabbitmq-consumer-log-server (1.0.1) unstable; urgency=low
 
   - Initial fixes
