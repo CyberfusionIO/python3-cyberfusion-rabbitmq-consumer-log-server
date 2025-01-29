@@ -7,7 +7,9 @@ from cyberfusion.RabbitMQConsumerLogServer import database
 
 
 def test_get_rpc_requests_overview(
-    test_client: TestClient, rpc_request_logs: List[database.RPCRequestLog]
+    test_client: TestClient,
+    rpc_request_logs: List[database.RPCRequestLog],
+    rpc_response_logs: List[database.RPCResponseLog],
 ) -> None:
     response = test_client.get(
         "/rpc-requests",

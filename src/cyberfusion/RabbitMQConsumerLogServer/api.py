@@ -35,7 +35,7 @@ router = APIRouter(dependencies=[Depends(validate_api_token)])
 )
 def log_rpc_request(
     database_session: Session = Depends(get_database_session),
-    body: pydantic_models.RPCRequestLog = Body(),
+    body: pydantic_models.RPCRequestLogAPI = Body(),
 ) -> Any:
     object_ = database.RPCRequestLog(
         correlation_id=str(body.correlation_id),
@@ -75,7 +75,7 @@ def log_rpc_request(
 )
 def log_rpc_response(
     database_session: Session = Depends(get_database_session),
-    body: pydantic_models.RPCResponseLog = Body(),
+    body: pydantic_models.RPCResponseLogAPI = Body(),
 ) -> Any:
     rpc_request = (
         database_session.query(database.RPCRequestLog)
