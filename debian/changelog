@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer-log-server (1.1) unstable; urgency=low
+
+  - Implement pruning
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Wed, 29 Jan 2025 16:30:00 +0100
+
 python3-cyberfusion-rabbitmq-consumer-log-server (1.0.2) unstable; urgency=low
 
   - Fix JSON casting
