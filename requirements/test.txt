@@ -1,5 +1,5 @@
 coverage==7.6.1
-Faker==35.0.0
+Faker==36.2.2
 httpx==0.27.0
 pytest==8.3.2
 pytest-cov==6.0.0
