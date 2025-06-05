@@ -28,9 +28,7 @@ def set_sqlite_pragma(
 
 
 def make_database_session() -> Session:
-    engine = create_engine(
-        "sqlite:///" + settings.database_path, connect_args={"check_same_thread": False}
-    )
+    engine = create_engine("sqlite:///" + settings.database_path)
 
     return sessionmaker(bind=engine)()
 
