@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer-log-server (1.1.4) unstable; urgency=low
+
+  - Don't leak PRAGMA statement to other database sessions
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Thu, 05 Jun 2025 18:41:00 +0100
+
 python3-cyberfusion-rabbitmq-consumer-log-server (1.1.3) unstable; urgency=low
 
   - Disallow unsafe database session multithreading
