@@ -6,11 +6,9 @@ from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 from sqlalchemy import create_engine, Column, DateTime, Integer, String
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.engine import Engine
 from sqlalchemy import event
 
 
-@event.listens_for(Engine, "connect")  # type: ignore[misc]
 def set_sqlite_pragma(
     dbapi_connection: sqlite3.Connection, connection_record: _ConnectionRecord
 ) -> None:
@@ -29,6 +27,8 @@ def set_sqlite_pragma(
 
 def make_database_session() -> Session:
     engine = create_engine("sqlite:///" + settings.database_path)
+
+    event.listen(engine, "connect", set_sqlite_pragma)
 
     return sessionmaker(bind=engine)()
 
