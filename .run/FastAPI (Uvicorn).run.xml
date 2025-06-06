@@ -1,5 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="FastAPI (Uvicorn)" type="Python.FastAPI">
+    <option name="additionalOptions" value="--reload --port 58850" />
+    <option name="appName" value="app" />
     <option name="file" value="$PROJECT_DIR$/src/cyberfusion/RabbitMQConsumerLogServer/fastapi.py" />
     <module name="python3-cyberfusion-rabbitmq-consumer-log-server" />
     <option name="ENV_FILES" value="" />
