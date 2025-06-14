@@ -81,6 +81,7 @@ def test_get_rpc_requests_overview_invalid_credentials(
         auth=("ignored", "invalid"),
     )
 
+    assert response.json() == {"detail": "Incorrect username or password"}
     assert response.status_code == 401
 
 
@@ -93,6 +94,7 @@ def test_get_rpc_request_detail_invalid_credentials(
         auth=("ignored", "invalid"),
     )
 
+    assert response.json() == {"detail": "Incorrect username or password"}
     assert response.status_code == 401
 
 
