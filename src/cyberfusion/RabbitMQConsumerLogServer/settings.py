@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     api_token: str = "change_me"
     gui_password: str = "change_me"
     database_path: str = "./rabbitmq-consumer-log-server.db"
-    templates_directory: str = "templates"
+    views_directory: str = "views"
     static_files_directory: str = "static"
     keep_days: int = 45
 

@@ -21,7 +21,7 @@ DEFAULT_LIMIT = 20
 
 router = APIRouter(dependencies=[Depends(validate_credentials)])
 
-templates = Jinja2Templates(directory=settings.templates_directory)
+views = Jinja2Templates(directory=settings.views_directory)
 
 
 @router.get(  # type: ignore[misc]
@@ -77,7 +77,7 @@ def rpc_requests_overview(
 
     # Get template
 
-    return templates.TemplateResponse(
+    return views.TemplateResponse(
         name="rpc_requests_overview.html",
         context={
             "request": request,
@@ -138,7 +138,7 @@ def rpc_request_detail(
     else:
         rpc_response_pydantic_model = None
 
-    return templates.TemplateResponse(
+    return views.TemplateResponse(
         name="rpc_request_detail.html",
         context={
             "request": request,

@@ -6,7 +6,7 @@ install:
 	cp alembic.debian.ini $(PREFIX)usr/share/rabbitmq-consumer-log-server/alembic.ini
 
 	rsync -a migrations/ $(PREFIX)usr/share/rabbitmq-consumer-log-server/migrations/
-	rsync -a templates/ $(PREFIX)usr/share/rabbitmq-consumer-log-server/templates/
+	rsync -a views/ $(PREFIX)usr/share/rabbitmq-consumer-log-server/views/
 	rsync -a static/ $(PREFIX)usr/share/rabbitmq-consumer-log-server/static/
 
 
