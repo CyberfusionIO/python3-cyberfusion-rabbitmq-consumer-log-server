@@ -10,9 +10,6 @@ export PYBUILD_DISABLE=test
 override_dh_installsystemd:
 	dh_installsystemd --name=rabbitmq-consumer-log-server
 
-execute_after_dh_installsystemd:
-	dh_installsysusers
-
 # Run make manually; no native way to let dh_install use multiple build systems
 execute_after_dh_install:
 	make install
