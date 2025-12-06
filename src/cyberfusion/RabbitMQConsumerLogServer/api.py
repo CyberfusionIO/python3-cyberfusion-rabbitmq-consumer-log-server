@@ -17,7 +17,7 @@ from fastapi import APIRouter
 router = APIRouter(dependencies=[Depends(validate_api_token)])
 
 
-@router.post(  # type: ignore[misc]
+@router.post(  # type: ignore[untyped-decorator]
     "/api/v1/rpc-requests",
     summary="Log RPC request",
     status_code=status.HTTP_201_CREATED,
@@ -53,7 +53,7 @@ def log_rpc_request(
     return pydantic_models.APIDetailMessage(detail="Object created")
 
 
-@router.post(  # type: ignore[misc]
+@router.post(  # type: ignore[untyped-decorator]
     "/api/v1/rpc-responses",
     summary="Log RPC response",
     status_code=status.HTTP_201_CREATED,
