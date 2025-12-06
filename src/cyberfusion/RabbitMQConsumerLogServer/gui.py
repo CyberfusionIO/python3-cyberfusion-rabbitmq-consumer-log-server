@@ -24,7 +24,7 @@ router = APIRouter(dependencies=[Depends(validate_credentials)])
 views = Jinja2Templates(directory=settings.views_directory)
 
 
-@router.get(  # type: ignore[misc]
+@router.get(  # type: ignore[untyped-decorator]
     "/rpc-requests",
     response_class=HTMLResponse,
     status_code=status.HTTP_200_OK,
@@ -95,7 +95,7 @@ def rpc_requests_overview(
     )
 
 
-@router.get(  # type: ignore[misc]
+@router.get(  # type: ignore[untyped-decorator]
     "/rpc-requests/{correlation_id}",
     response_class=HTMLResponse,
     status_code=status.HTTP_200_OK,
