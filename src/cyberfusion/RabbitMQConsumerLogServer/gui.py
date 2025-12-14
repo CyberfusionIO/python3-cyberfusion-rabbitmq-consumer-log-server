@@ -67,12 +67,12 @@ def rpc_requests_overview(
 
     for rpc_request in rpc_requests_database_models:
         rpc_requests_pydantic_models.append(
-            pydantic_models.RPCRequestLogDatabase.from_orm(rpc_request)
+            pydantic_models.RPCRequestLogDatabase.model_validate(rpc_request)
         )
 
     for rpc_response in rpc_responses_database_models:
         rpc_responses_pydantic_models.append(
-            pydantic_models.RPCResponseLogDatabase.from_orm(rpc_response)
+            pydantic_models.RPCResponseLogDatabase.model_validate(rpc_response)
         )
 
     # Get template
@@ -121,7 +121,7 @@ def rpc_request_detail(
     if not rpc_request_database_model:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-    rpc_request_pydantic_model = pydantic_models.RPCRequestLogDatabase.from_orm(
+    rpc_request_pydantic_model = pydantic_models.RPCRequestLogDatabase.model_validate(
         rpc_request_database_model
     )
 
@@ -132,8 +132,10 @@ def rpc_request_detail(
     )
 
     if rpc_response_database_model:
-        rpc_response_pydantic_model = pydantic_models.RPCResponseLogDatabase.from_orm(
-            rpc_response_database_model
+        rpc_response_pydantic_model = (
+            pydantic_models.RPCResponseLogDatabase.model_validate(
+                rpc_response_database_model
+            )
         )
     else:
         rpc_response_pydantic_model = None
