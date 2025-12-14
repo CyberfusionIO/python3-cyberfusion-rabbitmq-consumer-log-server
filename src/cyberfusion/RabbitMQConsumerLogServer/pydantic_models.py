@@ -1,14 +1,18 @@
 from typing import Optional
 from pydantic import BaseModel, UUID4
 from datetime import datetime
-from pydantic import Json
+from pydantic import Json, ConfigDict
 
 
-class APIDetailMessage(BaseModel):
+class PydanticModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class APIDetailMessage(PydanticModel):
     detail: str
 
 
-class RPCRequestLogAPI(BaseModel):
+class RPCRequestLogAPI(PydanticModel):
     correlation_id: UUID4
     request_payload: dict | list
     virtual_host_name: str
@@ -18,13 +22,13 @@ class RPCRequestLogAPI(BaseModel):
     rabbitmq_username: str
 
 
-class RPCResponseLogAPI(BaseModel):
+class RPCResponseLogAPI(PydanticModel):
     correlation_id: UUID4
     response_payload: dict
     traceback: Optional[str]
 
 
-class RPCRequestLogDatabase(BaseModel):
+class RPCRequestLogDatabase(PydanticModel):
     correlation_id: UUID4
     request_payload: Json
     virtual_host_name: str
@@ -34,15 +38,9 @@ class RPCRequestLogDatabase(BaseModel):
     rabbitmq_username: str
     created_at: datetime
 
-    class Config:
-        orm_mode = True
 
-
-class RPCResponseLogDatabase(BaseModel):
+class RPCResponseLogDatabase(PydanticModel):
     correlation_id: UUID4
     response_payload: Json
     traceback: Optional[str]
     created_at: datetime
-
-    class Config:
-        orm_mode = True

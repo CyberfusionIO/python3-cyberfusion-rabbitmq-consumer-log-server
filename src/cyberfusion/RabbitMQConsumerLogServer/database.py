@@ -1,11 +1,12 @@
 import sqlite3
 from datetime import datetime
+from typing import Optional
+
 from sqlalchemy.pool.base import _ConnectionRecord
 from sqlalchemy import ForeignKey, MetaData
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
-from sqlalchemy import create_engine, Column, DateTime, Integer, String
-from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, DateTime, Integer, String
+from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase, mapped_column, Mapped
 from sqlalchemy import event
 
 
@@ -41,18 +42,20 @@ naming_convention = {
     "pk": "pk_%(table_name)s",
 }
 
-metadata = MetaData(naming_convention=naming_convention)
-
-Base = declarative_base(metadata=metadata)
+metadata_obj = MetaData(naming_convention=naming_convention)
 
 
-class BaseModel(Base):  # type: ignore[misc, valid-type]
+class Base(DeclarativeBase):
+    metadata = metadata_obj
+
+
+class BaseModel(Base):
     """Base model."""
 
     __abstract__ = True
 
-    id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class RPCRequestLog(BaseModel):
@@ -60,13 +63,13 @@ class RPCRequestLog(BaseModel):
 
     __tablename__ = "rpc_requests_logs"
 
-    correlation_id = Column(String(length=36), unique=True, nullable=False)
-    request_payload = Column(String(), nullable=False)
-    virtual_host_name = Column(String(length=255), nullable=False)
-    exchange_name = Column(String(length=255), nullable=False)
-    queue_name = Column(String(length=255), nullable=False)
-    hostname = Column(String(length=255), nullable=False)
-    rabbitmq_username = Column(String(length=255), nullable=False)
+    correlation_id: Mapped[str] = mapped_column(String(length=36), unique=True)
+    request_payload: Mapped[str] = mapped_column(String())
+    virtual_host_name: Mapped[str] = mapped_column(String(length=255))
+    exchange_name: Mapped[str] = mapped_column(String(length=255))
+    queue_name: Mapped[str] = mapped_column(String(length=255))
+    hostname: Mapped[str] = mapped_column(String(length=255))
+    rabbitmq_username: Mapped[str] = mapped_column(String(length=255))
 
 
 class RPCResponseLog(BaseModel):
@@ -74,11 +77,11 @@ class RPCResponseLog(BaseModel):
 
     __tablename__ = "rpc_responses_logs"
 
-    correlation_id = Column(
+    correlation_id: Mapped[str] = mapped_column(
         String(length=36),
         ForeignKey("rpc_requests_logs.correlation_id", ondelete="CASCADE"),
         unique=True,
         nullable=False,
     )
-    response_payload = Column(String(), nullable=False)
-    traceback = Column(String(), nullable=True)
+    response_payload: Mapped[str] = mapped_column(String())
+    traceback: Mapped[Optional[str]] = mapped_column(String())
