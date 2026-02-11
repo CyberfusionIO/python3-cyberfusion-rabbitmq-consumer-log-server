@@ -4,7 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """Settings."""
 
-    model_config = SettingsConfigDict(secrets_dir="/etc/rabbitmq-consumer-log-server")
+    model_config = SettingsConfigDict(
+        secrets_dir="/etc/rabbitmq-consumer-log-server", extra="ignore"
+    )
 
     api_token: str = "change_me"
     gui_password: str = "change_me"
