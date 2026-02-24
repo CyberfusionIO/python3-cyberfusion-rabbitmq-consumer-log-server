@@ -11,7 +11,7 @@ authors = [
     { name = "Cyberfusion", email = "support@cyberfusion.io" },
 ]
 dependencies = [
-    "fastapi==0.132.0",
+    "fastapi==0.133.0",
     "pydantic==2.12.5",
     "alembic==1.18.4",
     "SQLAlchemy==2.0.46",
