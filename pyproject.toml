@@ -16,7 +16,7 @@ dependencies = [
     "alembic==1.18.4",
     "SQLAlchemy==2.0.48",
     "jinja2==3.1.6",
-    "pydantic-settings==2.13.1",
+    "pydantic-settings==2.14.2",
 ]
 
 [project.urls]
