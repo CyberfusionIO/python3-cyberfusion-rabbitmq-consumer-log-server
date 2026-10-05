@@ -5,12 +5,14 @@ class Settings(BaseSettings):
     """Settings."""
 
     model_config = SettingsConfigDict(
-        secrets_dir="/etc/rabbitmq-consumer-log-server", extra="ignore"
+        secrets_dir="/etc/rabbitmq-consumer-log-server",
+        env_file=".env",
+        extra="ignore",
     )
 
     api_token: str = "change_me"
     gui_password: str = "change_me"
-    database_path: str = "./rabbitmq-consumer-log-server.db"
+    database_uri: str
     views_directory: str = "views"
     static_files_directory: str = "static"
     keep_days: int = 45

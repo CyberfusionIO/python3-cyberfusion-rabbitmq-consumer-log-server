@@ -1,3 +1,9 @@
+python3-cyberfusion-rabbitmq-consumer-log-server (2.0) unstable; urgency=medium
+
+  * Switch from SQLite to MariaDB as database
+
+ -- William Edwards <wedwards@cyberfusion.nl>  Sun, 04 Oct 2026 11:14:00 +0000
+
 python3-cyberfusion-rabbitmq-consumer-log-server (1.2.1) unstable; urgency=medium
 
   * Ignore extra settings for easier config changes

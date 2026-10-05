@@ -45,7 +45,12 @@ def rpc_requests_overview(
 ) -> Any:
     rpc_requests_database_models = (
         database_session.query(database.RPCRequestLog)
-        .order_by(database.RPCRequestLog.created_at.desc())
+        # Order by ID as well, so that logs created at the same time are
+        # still returned in a stable order (which pagination depends on)
+        .order_by(
+            database.RPCRequestLog.created_at.desc(),
+            database.RPCRequestLog.id.desc(),
+        )
         .limit(limit)
         .offset(offset)
         .all()

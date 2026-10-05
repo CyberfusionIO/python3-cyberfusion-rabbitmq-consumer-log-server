@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    ports:
+      - "21883:3306"
+    environment:
+      MYSQL_DATABASE: rabbitmq-consumer-log-server
+      MYSQL_USER: rabbitmq-consumer-log-server
+      MYSQL_PASSWORD: 'yvXKmMbfdRHZtLcDrNfGhWqA'
+      MYSQL_ROOT_PASSWORD: 'cRzTf6JVmWbQ4pLdK9sXaYvN'
+    volumes:
+      - mariadb:/var/lib/mysql
+
+volumes:
+  mariadb:
