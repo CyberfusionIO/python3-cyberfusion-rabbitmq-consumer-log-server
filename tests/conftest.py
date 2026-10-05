@@ -10,7 +10,6 @@ from fastapi.testclient import TestClient
 from _pytest.config.argparsing import Parser
 
 from cyberfusion.RabbitMQConsumerLogServer.database import RPCRequestLog
-from cyberfusion.RabbitMQConsumerLogServer.dependencies import get_database_session
 from cyberfusion.RabbitMQConsumerLogServer.fastapi import app
 import pytest
 
@@ -63,23 +62,15 @@ def database_session(
         # means changes on either side is reflected on both sides. Without it,
         # MariaDB's default transaction isolation level hides changes committed
         # by the other side.
-        #
-        # The request dependency is overridden rather than mocked, so that the
-        # app doesn't close the shared session when a request ends: closing it
-        # detaches the objects tests seeded.
 
         session_mocker.patch.object(
             database, "make_database_session", return_value=database_session
         )
 
-        app.dependency_overrides[get_database_session] = lambda: database_session
-
         # Return database session
 
         yield database_session
     finally:
-        app.dependency_overrides.clear()
-
         database_session.close()
 
         drop_database(url)
