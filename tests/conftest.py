@@ -2,6 +2,7 @@ from typing import List, Generator
 from alembic import command
 from alembic.config import Config
 from pytest_mock import MockerFixture
+from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import create_database, database_exists, drop_database
@@ -9,6 +10,7 @@ from fastapi.testclient import TestClient
 from _pytest.config.argparsing import Parser
 
 from cyberfusion.RabbitMQConsumerLogServer.database import RPCRequestLog
+from cyberfusion.RabbitMQConsumerLogServer.dependencies import get_database_session
 from cyberfusion.RabbitMQConsumerLogServer.fastapi import app
 import pytest
 
@@ -20,29 +22,9 @@ from cyberfusion.RabbitMQConsumerLogServer.seeders import (
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 
 
-def pytest_addoption(parser: Parser) -> None:
-    parser.addoption(
-        "--mariadb-admin-uri",
-        action="store",
-        type=str,
-        required=True,
-        help="User must have permission to create and drop databases",
-    )
-
-
-@pytest.fixture(scope="session")
-def option_mariadb_admin_uri(request: pytest.FixtureRequest) -> str:
-    return request.config.getoption("--mariadb-admin-uri")
-
-
-@pytest.fixture
-def test_client() -> TestClient:
-    return TestClient(app)
-
-
-@pytest.fixture(autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def database_session(
-    worker_id: str, option_mariadb_admin_uri: str, mocker: MockerFixture
+    worker_id: str, option_mariadb_admin_uri: str, session_mocker: MockerFixture
 ) -> Generator[Session, None, None]:
     # Create worker-specific database for parallelisation
 
@@ -61,12 +43,13 @@ def database_session(
     if database_exists(url):
         drop_database(url)
 
+    # Create database
+
     create_database(url)
 
     # Create database session
 
     database_session = database.make_database_session()
-    close_database_session = database_session.close
 
     try:
         # Run Alembic migrations
@@ -80,21 +63,56 @@ def database_session(
         # means changes on either side is reflected on both sides. Without it,
         # MariaDB's default transaction isolation level hides changes committed
         # by the other side.
+        #
+        # The request dependency is overridden rather than mocked, so that the
+        # app doesn't close the shared session when a request ends: closing it
+        # detaches the objects tests seeded.
 
-        mocker.patch.object(
+        session_mocker.patch.object(
             database, "make_database_session", return_value=database_session
         )
 
-        # Don't let the app close the shared session: it is closed when the test
-        # ends, by the real method saved above
+        app.dependency_overrides[get_database_session] = lambda: database_session
 
-        mocker.patch.object(database_session, "close")
+        # Return database session
 
         yield database_session
     finally:
-        close_database_session()
+        app.dependency_overrides.clear()
+
+        database_session.close()
 
         drop_database(url)
+
+
+@pytest.fixture(autouse=True)
+def clean_database(database_session: Session) -> Generator[None, None, None]:
+    yield
+
+    database_session.rollback()
+
+    # Clear every table in the database. Foreign key checks are disabled, so the
+    # delete order does not matter.
+
+    table_names = [
+        table_name
+        for (table_name,) in database_session.execute(text("SHOW TABLES"))
+        if table_name != "alembic_version"
+    ]
+
+    database_session.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
+
+    for table_name in table_names:
+        database_session.execute(text(f"DELETE FROM `{table_name}`"))
+
+    database_session.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
+
+    database_session.commit()
+
+
+@pytest.fixture
+def test_client() -> TestClient:
+    return TestClient(app)
 
 
 @pytest.fixture
@@ -107,3 +125,18 @@ def rpc_response_logs(
     database_session: Session, rpc_request_logs: List[RPCRequestLog]
 ) -> List[database.RPCResponseLog]:
     return seed_rpc_response_logs(database_session, rpc_request_logs)
+
+
+@pytest.fixture(scope="session")
+def option_mariadb_admin_uri(request: pytest.FixtureRequest) -> str:
+    return request.config.getoption("--mariadb-admin-uri")
+
+
+def pytest_addoption(parser: Parser) -> None:
+    parser.addoption(
+        "--mariadb-admin-uri",
+        action="store",
+        type=str,
+        required=True,
+        help="User must have permission to create and drop databases",
+    )

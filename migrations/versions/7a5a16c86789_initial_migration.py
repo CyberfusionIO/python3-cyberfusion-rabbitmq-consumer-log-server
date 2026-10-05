@@ -1,6 +1,6 @@
 """Initial migration
 
-Revision ID: 4e1c0a7b92d5
+Revision ID: 7a5a16c86789
 Revises:
 Create Date: 2026-10-04 10:00:00.000000
 
@@ -12,7 +12,7 @@ from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT
 
 
 # revision identifiers, used by Alembic.
-revision = "4e1c0a7b92d5"
+revision = "7a5a16c86789"
 down_revision = None
 branch_labels = None
 depends_on = None

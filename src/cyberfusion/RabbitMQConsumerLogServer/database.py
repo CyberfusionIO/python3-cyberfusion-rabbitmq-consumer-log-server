@@ -1,17 +1,21 @@
+import functools
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import ForeignKey, MetaData
+from sqlalchemy import Engine, ForeignKey, MetaData
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 from sqlalchemy import create_engine, Integer, String
 from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT
 from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase, mapped_column, Mapped
 
 
-def make_database_session() -> Session:
-    engine = create_engine(settings.database_uri, pool_pre_ping=True)
+@functools.cache
+def get_engine() -> Engine:
+    return create_engine(settings.database_uri, pool_pre_ping=True)
 
-    return sessionmaker(bind=engine)()
+
+def make_database_session() -> Session:
+    return sessionmaker(bind=get_engine())()
 
 
 naming_convention = {
@@ -35,8 +39,6 @@ class BaseModel(Base):
     __abstract__ = True
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    # Microsecond precision, so that logs created in the same second can still
-    # be ordered by creation time
     created_at: Mapped[datetime] = mapped_column(
         DATETIME(fsp=6), default=datetime.utcnow
     )
