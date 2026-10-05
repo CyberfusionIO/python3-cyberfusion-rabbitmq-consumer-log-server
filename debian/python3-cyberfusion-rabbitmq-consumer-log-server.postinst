@@ -5,23 +5,7 @@ set -e
 #DEBHELPER#
 
 if [ "$1" = "configure" ]; then
-    DATABASE_DIR=/var/lib/rabbitmq-consumer-log-server
-    DATABASE_PATH=$DATABASE_DIR/rabbitmq-consumer-log-server.db
-
-    mkdir -p $DATABASE_DIR
-    chown rabbitmq-consumer-log-server: $DATABASE_DIR
-    chmod 0700 $DATABASE_DIR
-
-    if [ ! -f $DATABASE_PATH ]; then
-	    echo "Database does not exist, creating..."
-
-        sqlite3 $DATABASE_PATH "VACUUM;"
-    else
-        echo "Database already exists, not creating"
-    fi
-
-    chown rabbitmq-consumer-log-server: $DATABASE_PATH
-    chmod 0600 $DATABASE_PATH
+    # Migrate database
 
     sudo -u rabbitmq-consumer-log-server /usr/bin/alembic --config /usr/share/rabbitmq-consumer-log-server/alembic.ini upgrade head
 fi

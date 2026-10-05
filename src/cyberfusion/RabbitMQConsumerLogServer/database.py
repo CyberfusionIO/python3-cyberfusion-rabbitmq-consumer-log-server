@@ -1,35 +1,15 @@
-import sqlite3
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy.pool.base import _ConnectionRecord
 from sqlalchemy import ForeignKey, MetaData
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
-from sqlalchemy import create_engine, DateTime, Integer, String
+from sqlalchemy import create_engine, Integer, String
+from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT
 from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase, mapped_column, Mapped
-from sqlalchemy import event
-
-
-def set_sqlite_pragma(
-    dbapi_connection: sqlite3.Connection, connection_record: _ConnectionRecord
-) -> None:
-    """Enable foreign key support.
-
-    This is needed for cascade deletes to work.
-
-    See https://docs.sqlalchemy.org/en/13/dialects/sqlite.html#sqlite-foreign-keys
-    """
-    cursor = dbapi_connection.cursor()
-
-    cursor.execute("PRAGMA foreign_keys=ON")
-
-    cursor.close()
 
 
 def make_database_session() -> Session:
-    engine = create_engine("sqlite:///" + settings.database_path)
-
-    event.listen(engine, "connect", set_sqlite_pragma)
+    engine = create_engine(settings.database_uri, pool_pre_ping=True)
 
     return sessionmaker(bind=engine)()
 
@@ -55,7 +35,11 @@ class BaseModel(Base):
     __abstract__ = True
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # Microsecond precision, so that logs created in the same second can still
+    # be ordered by creation time
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME(fsp=6), default=datetime.utcnow
+    )
 
 
 class RPCRequestLog(BaseModel):
@@ -64,7 +48,7 @@ class RPCRequestLog(BaseModel):
     __tablename__ = "rpc_requests_logs"
 
     correlation_id: Mapped[str] = mapped_column(String(length=36), unique=True)
-    request_payload: Mapped[str] = mapped_column(String())
+    request_payload: Mapped[str] = mapped_column(LONGTEXT)
     virtual_host_name: Mapped[str] = mapped_column(String(length=255))
     exchange_name: Mapped[str] = mapped_column(String(length=255))
     queue_name: Mapped[str] = mapped_column(String(length=255))
@@ -83,5 +67,5 @@ class RPCResponseLog(BaseModel):
         unique=True,
         nullable=False,
     )
-    response_payload: Mapped[str] = mapped_column(String())
-    traceback: Mapped[Optional[str]] = mapped_column(String())
+    response_payload: Mapped[str] = mapped_column(LONGTEXT)
+    traceback: Mapped[Optional[str]] = mapped_column(LONGTEXT)

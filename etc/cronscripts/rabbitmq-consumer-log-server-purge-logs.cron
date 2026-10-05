@@ -7,9 +7,8 @@ PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin
 ESCALATE_MAILTO="system-messages.foundation@cyberfusion.io"
 
 SCRIPT=/usr/bin/rabbitmq-consumer-log-server-purge-logs
-DATABASE_PATH=/var/lib/rabbitmq-consumer-log-server/rabbitmq-consumer-log-server.db
 
 func_cron()
 {
-  DATABASE_PATH=$DATABASE_PATH $SCRIPT || fatal "Error running rabbitmq-consumer-log-server-purge-logs"
+  $SCRIPT || fatal "Error running rabbitmq-consumer-log-server-purge-logs"
 }
