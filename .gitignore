@@ -134,6 +134,3 @@ report-mypy.xml
 
 # macOS
 .DS_Store
-
-# Project
-rabbitmq-consumer-log-server.db

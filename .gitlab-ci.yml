@@ -18,11 +18,18 @@ stages:
 unit test and feature test:
   stage: test
   image: python:3.13
+  services:
+    - name: mariadb:10.11
+      alias: mariadb
+  variables:
+    MYSQL_ROOT_PASSWORD: 'cRzTf6JVmWbQ4pLdK9sXaYvN'
   script:
     - !reference [.add repositories, script]
+    - ln -s .env.ci .env
     - pip install --no-cache-dir -r requirements/test.txt
     - pip install .
     - pytest -n 10 -vvv --cov-branch --cov=cyberfusion.RabbitMQConsumerLogServer --cov-config=.coveragerc --cov-fail-under=100 --junitxml=report-pytest.xml
+      --mariadb-admin-uri mysql+pymysql://root:cRzTf6JVmWbQ4pLdK9sXaYvN@mariadb
   artifacts:
     reports:
       junit: report-*.xml

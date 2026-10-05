@@ -3,14 +3,14 @@ from fastapi.security import HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from starlette import status
 from fastapi.security import HTTPBasic
-
+from typing import Generator
 from cyberfusion.RabbitMQConsumerLogServer import database
 from cyberfusion.RabbitMQConsumerLogServer.settings import settings
 
 http_basic = HTTPBasic()
 
 
-def get_database_session() -> Session:
+def get_database_session() -> Generator[Session, None, None]:
     """Get database session."""
     database_session = database.make_database_session()
 
